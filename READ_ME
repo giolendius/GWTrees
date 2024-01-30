@@ -1,0 +1,18 @@
+This is a simulation for independent Bernoulli percolation on Galton-Watson tree.
+
+You can run Simulations.py choosing a value of max_off.
+For each run, 100 simulations are done where:
+    - rdsq generate a random sequence of 30 integers in [0,max_off]
+    - A Galton-Watson tree is generated: every point generate offspring using the rdsq.
+        I.e. every point generate a uniformly at random number of children in [0,max_off].
+        (We actually stop the creation after generating offspring for 30 points)
+    - A Bernoulli field is generated: for every point x in the tree, a Bernoulli variable B_x with parameter p is generated.
+    - We check if at least a point y in the last generation and all the points from the root R and the point y have all
+        associated Bernoulli variables equals to 1. If this happens, we say that the process percolates.
+For a fixed value of max_off, we compute m and simulate for 100 values of p.
+
+Conclusion:
+    If max_off = 1 or 2, m <= 1, so no tree survives (small fluctuations are possible since we only generate 30 points' offspring
+    If m >1, we see that trees have a positive probability to survive:
+        if p <= 1/m: no percolation is possible (fluctuations are possible)
+        if p >  1/m:  percolation can happen, and for p-->1 its probability increases.
