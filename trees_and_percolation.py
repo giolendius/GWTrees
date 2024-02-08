@@ -10,44 +10,44 @@ def bernoulli(p):
         return 0
 
 
-def rdsq(length, min_int, max_int):
-    a = []
-    for i in range(length):
-        a.append(randint(min_int, max_int))
-    return a
+def rdsq(length: int, min_int: int, max_int: int) -> list[int]:
+    f"Returns a list of {length} integers randomly chossen between {min_int} and {max_int}"
+    return [randint(min_int, max_int) for i in range(length)]
 
 
 class Point:
-    def __init__(self, parent_point, son_number):  # first is Point type or None, second is int
+    """Creates a Point object,  with a parent point and a child tag which represent the number of "older" sibling  +1"""
+
+    def __init__(self, parent_point: "Point", son_number: int):
         self.parent = parent_point
         self.son_number = son_number
-        if parent_point is None:
+        self.name = ""
+        if parent_point == None:
             self.name = 'R'
         else:
             self.name = parent_point.name + str(son_number)
-        if parent_point is None:
+        if parent_point == None:
             self.gen = 0
         else:
             self.gen = len(self.parent.name)
-        self.field = 2
+        self.field = 3
 
 
 class Tree:
-    def __init__(self, sequence):
+    def __init__(self, sequence: list):
         R = Point(None, 0)
         self.potential = [R]
         self.points = [R]
-        self.lastgen = []
+        self.last_gen = []
         self.died = False
 
         for children in sequence:
-            pr = self.potential[0]
+            parent = self.potential[0]
             if children != 0:
-                for child in range(1, children+1):
-                    x = Point(pr, child)  # x is temporary a point
+                for child in range(1, children + 1):
+                    x = Point(parent, child)
                     self.potential += [x]
                     self.points += [x]
-                    # self.gen1.append(self.potentialNames[0] + str(child))
             self.died = len(self.potential) == 1
             if self.died:
                 break
@@ -55,44 +55,37 @@ class Tree:
 
         for point in self.points:
             if point.gen == self.points[-1].gen:
-                self.lastgen.append(point)
+                self.last_gen.append(point)
 
     def printallpoints(self):
         for point in self.points:
             print(point.name)
 
-    def ancestorline_points(self, point):
+    def ancestorline(self, point: Point, only_points_names: bool):
         ancline = []
         current = point
         for i in range(len(point.name)):
-            ancline.append(current)
+            if only_points_names:
+                ancline.append(current.name)
+            else:
+                ancline.append(current)
             current = current.parent
         return ancline
 
-    
-    def ancestorline_names(self, point):
-        ancline = []
-        current = point
-        for i in range(len(point.name)):
-            ancline.append(current.name)
-            current = current.parent
-        return ancline
-
-    def generate_field(self, parameter):
-        if self.died is False:
+    def generate_field(self, parameter: float):
+        if not self.died:
             for point in self.points:
                 point.field = bernoulli(parameter)
-
     def print_field(self):
         for point in self.points:
             print(f'Point {point.name}, field {point.field}')
 
     def percolation(self):
-        if self.died is True:
-            return 'Tree died. Perc. not def.'
-        for point in self.lastgen:
+        if self.died:
+            return 'Tree died. Percr. not def.'
+        for point in self.last_gen:
             a = 1
-            for vertex in self.ancestorline_points(point):
+            for vertex in self.ancestorline(point, False):
                 a *= vertex.field
             if a == 1:
                 return f"Percolation succeed from root to leaf {point.name}"
