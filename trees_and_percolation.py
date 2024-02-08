@@ -24,11 +24,9 @@ class Point:
         self.name = ""
         if parent_point == None:
             self.name = 'R'
-        else:
-            self.name = parent_point.name + str(son_number)
-        if parent_point == None:
             self.gen = 0
         else:
+            self.name = parent_point.name + str(son_number)
             self.gen = len(self.parent.name)
         self.field = 3
 
